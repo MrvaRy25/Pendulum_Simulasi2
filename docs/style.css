@@ -1,0 +1,231 @@
+:root {
+  --bg: #f4f4f4;
+  --card: #ffffff;
+  --text: #333;
+  --primary: #3498db;
+  --primary-dark: #2980b9;
+  --accent: #9b59b6;
+  --shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+#simulation-panel,
+#control-panel {
+  flex: 1 1 450px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#pendulumCanvas {
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  height: auto;
+}
+
+#control-panel h2,
+#control-panel h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 4px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin-top: 5px;
+}
+
+select,
+input[type="checkbox"] {
+  margin-top: 5px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+span {
+  font-weight: bold;
+}
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+}
+
+canvas {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.advanced-only {
+  transition: all 0.3s ease-in-out;
+}
+
+/* ====== DARK MODE ====== */
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #f1f1f1;
+  --primary: #3498db;
+  --primary-dark: #2471a3;
+  --shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+body.dark #simulation-panel,
+body.dark #control-panel {
+  background-color: var(--card);
+  box-shadow: var(--shadow);
+}
+
+body.dark #pendulumCanvas {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+body.dark button {
+  background-color: var(--primary);
+}
+
+body.dark button:hover {
+  background-color: var(--primary-dark);
+}
+
+/* ====== TOGGLE SWITCH (Dark/Light) ====== */
+#themeToggle {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Toggle dengan slider bulat opsional */
+.switch-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background-color: var(--primary);
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* ====== RESPONSIVE LAYOUT ====== */
+@media (max-width: 600px) {
+  #simulation-panel,
+  #control-panel {
+    flex: 1 1 100%;
+    padding: 15px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+/* ====== GRAFIK ====== */
+canvas#energyChart,
+canvas#angleChart {
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+body.dark canvas#energyChart,
+body.dark canvas#angleChart {
+  background-color: #1a1a1a;
+  border-color: #444;
+}
