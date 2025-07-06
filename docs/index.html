@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulasi Pendulum Interaktif</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #pendulumCanvas {
+      border: 1px solid #999;
+      background-color: #fff;
+    }
+
+    /* Toggle Switch */
+    .switch-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    .switch input:checked + .slider {
+      background-color: #3498db;
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <!-- Panel Simulasi -->
+    <div id="simulation-panel">
+      <canvas id="pendulumCanvas" width="500" height="400"></canvas>
+    </div>
+
+    <!-- Panel Kontrol -->
+    <div id="control-panel">
+      <!-- Pilihan Bahasa -->
+      <label for="languageSelect"><span data-i18n="language">Bahasa</span>:</label>
+      <select id="languageSelect">
+        <option value="id">🇮🇩 Indonesia</option>
+        <option value="en">🇬🇧 English</option>
+      </select>
+
+      <!-- Toggle Dark Mode -->
+      <label class="switch-label">
+        <span data-i18n="darkMode">Mode Gelap</span>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle">
+          <span class="slider"></span>
+        </label>
+      </label>
+
+      <!-- Mode -->
+      <label for="modeSelect"><span data-i18n="mode">Mode</span>:</label>
+      <select id="modeSelect">
+        <option value="simple" data-i18n="simple">🔰 Sederhana</option>
+        <option value="advanced" data-i18n="advanced">🧪 Eksperimen</option>
+      </select>
+
+      <!-- Kecepatan -->
+      <label>
+        <span data-i18n="speed">Kecepatan Simulasi</span>:
+        <select id="speedSelect">
+          <option value="0.25">🐢 0.25×</option>
+          <option value="0.5">0.5×</option>
+          <option value="1" selected>🔁 1×</option>
+          <option value="2">⚡ 2×</option>
+          <option value="4">🚀 4×</option>
+        </select>
+      </label>
+
+      <h2 data-i18n="controls">Kontrol Parameter</h2>
+
+      <label>
+        <span data-i18n="length">Panjang Tali (m)</span>: <span id="lengthValue">1.5</span><br>
+        <input type="range" id="lengthSlider" min="0.5" max="3" step="0.1" value="1.5">
+      </label>
+
+      <label>
+        <span data-i18n="mass">Massa (kg)</span>: <span id="massValue">1</span><br>
+        <input type="range" id="massSlider" min="0.5" max="5" step="0.1" value="1">
+      </label>
+
+      <label>
+        <span data-i18n="angle">Sudut Awal (°)</span>: <span id="angleValue">30</span><br>
+        <input type="range" id="angleSlider" min="5" max="90" step="1" value="30">
+      </label>
+
+      <label>
+        <span data-i18n="gravity">Gravitasi (m/s²)</span>: <span id="gravityValue">9.8</span><br>
+        <input type="range" id="gravitySlider" min="1" max="25" step="0.1" value="9.8">
+      </label>
+
+      <!-- Fitur Eksperimen -->
+      <div class="advanced-only hidden">
+        <label>
+          <span data-i18n="damping">Redaman</span>: <span id="dampingValue">0.00</span><br>
+          <input type="range" id="dampingSlider" min="0" max="1" step="0.01" value="0">
+        </label>
+
+        <label>
+          <span data-i18n="planet">Planet</span>:<br>
+          <select id="planetSelect">
+            <option value="earth" data-i18n="earth">🌍 Bumi</option>
+            <option value="moon" data-i18n="moon">🌕 Bulan</option>
+            <option value="jupiter" data-i18n="jupiter">🪐 Jupiter</option>
+          </select>
+        </label>
+
+        <label>
+          <input type="checkbox" id="vectorCheckbox">
+          <span data-i18n="vectors">Tampilkan Vektor Gaya</span>
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button id="startBtn" data-i18n="start">▶️ Mulai</button>
+        <button id="pauseBtn" data-i18n="pause">⏸️ Jeda</button>
+        <button id="resetBtn" data-i18n="reset">🔄 Reset</button>
+      </div>
+
+      <h3 data-i18n="realtime">Nilai Real-Time</h3>
+      <div id="realtime-panel">
+        <p><span data-i18n="angleRT">θ (Sudut)</span>: <span id="angleRT">0</span>°</p>
+        <p><span data-i18n="omegaRT">ω (Kecepatan sudut)</span>: <span id="omegaRT">0</span> rad/s</p>
+        <p><span data-i18n="alphaRT">α (Percepatan sudut)</span>: <span id="alphaRT">0</span> rad/s²</p>
+        <p><span data-i18n="periodRT">T (Periode)</span>: <span id="periodRT">0</span> s</p>
+        <p><span data-i18n="pe">Energi Potensial</span>: <span id="peRT">0</span> J</p>
+        <p><span data-i18n="ke">Energi Kinetik</span>: <span id="keRT">0</span> J</p>
+        <p><span data-i18n="totalE">Total Energi</span>: <span id="energyRT">0</span> J</p>
+      </div>
+
+      <!-- Grafik Energi -->
+      <h3 data-i18n="energyGraph">Grafik Energi</h3>
+      <canvas id="energyChart" width="400" height="200"></canvas>
+
+      <!-- Grafik Sudut -->
+      <h3 data-i18n="angleGraph">Grafik Sudut vs Waktu</h3>
+      <canvas id="angleChart" width="400" height="200"></canvas>
+
+      <!-- Tombol Ekspor CSV -->
+      <button id="exportCSVBtn" data-i18n="exportCSV">📁 Ekspor Data CSV</button>
+    </div>
+  </div>
+
+  <!-- Skrip -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="pendulum.js"></script>
+  <script src="multilang.js"></script>
+  <script>
+    // Toggle dark mode
+    document.getElementById("themeToggle").addEventListener("change", function () {
+      document.body.classList.toggle("dark", this.checked);
+    });
+  </script>
+</body>
+</html>
